@@ -1,0 +1,19 @@
+pyscf-ifdft
+
+Authors:
+Dayou Zhang
+Yinan Shu
+Donald G. Truhlar
+
+This project is distributed under the Apache License 2.0. See LICENSE.
+
+The Rung3.5 formulas and stretched atomic-orbital construction in
+pyscf/ifdft/functionals/ml26.py are adapted from the Apache-2.0-licensed
+pyscf-r35dft project. Those portions retain their original attribution and
+license notices.
+
+Binary distributions include the separately linked libifxc shared library,
+which is distributed under the Mozilla Public License 2.0. Its corresponding
+source is available from https://github.com/Dayou-Zhang/libifxc, and release
+build logs identify the exact main-branch revision used. A copy of the MPL 2.0
+is provided in LICENSES/MPL-2.0.txt.

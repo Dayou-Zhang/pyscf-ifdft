@@ -1,0 +1,9 @@
+recursive-include pyscf/ifdft/data *.npz
+include LICENSE
+include LICENSES/*.txt
+include NOTICE
+include README.md
+include CMakeLists.txt
+include pyscf/lib/CMakeLists.txt
+include pyscf/lib/ifdft/CMakeLists.txt
+recursive-include pyscf/lib/ifdft *.c *.h

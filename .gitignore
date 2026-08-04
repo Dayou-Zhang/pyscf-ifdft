@@ -1,0 +1,38 @@
+# Python bytecode and caches
+.venv/
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.so.*
+*.dylib
+*.dll
+.cmake/
+.ninja_*
+.skbuild-info.json
+CMakeCache.txt
+CMakeFiles/
+CMakeInit.txt
+build.ninja
+cmake_install.cmake
+libifxc-build/
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+
+# Codex local metadata
+.codex/
+AGENTS.md

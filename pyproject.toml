@@ -1,0 +1,80 @@
+[build-system]
+requires = ["scikit-build-core>=0.11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "pyscf-ifdft"
+version = "0.1.0"
+description = "Fixed-density integral-feature DFT evaluation for PySCF"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "LICENSES/MPL-2.0.txt", "NOTICE"]
+authors = [
+    {name = "Dayou Zhang"},
+    {name = "Yinan Shu"},
+    {name = "Donald G. Truhlar"},
+]
+requires-python = ">=3.10"
+dependencies = ["pyscf>=2.13.1", "numpy", "scipy", "h5py"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: C",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Chemistry",
+]
+
+[project.urls]
+Homepage = "https://github.com/Dayou-Zhang/pyscf-ifdft"
+Repository = "https://github.com/Dayou-Zhang/pyscf-ifdft"
+Issues = "https://github.com/Dayou-Zhang/pyscf-ifdft/issues"
+
+[tool.scikit-build.wheel.packages]
+# This project extends PySCF's namespace; it does not provide the whole
+# ``pyscf`` package.  Mapping only the plugin package keeps the CMake source
+# directory ``pyscf/lib`` out of the Python package map.
+"pyscf/ifdft" = "pyscf/ifdft"
+
+[tool.scikit-build.editable]
+# Redirect-mode finders synthesize the shared ``pyscf`` parents and can hide
+# the regular PySCF package.  In-place mode lets PySCF extend its own package
+# path using the ordinary editable-install .pth entry.
+mode = "inplace"
+
+[tool.scikit-build.cmake.define]
+BUILD_SHARED_LIBS = "ON"
+
+[tool.scikit-build.sdist]
+include = [
+    "CMakeLists.txt",
+    "LICENSE",
+    "LICENSES/*.txt",
+    "MANIFEST.in",
+    "NOTICE",
+    "README.md",
+    "pyscf/ifdft/data/*.npz",
+    "pyscf/lib/CMakeLists.txt",
+    "pyscf/lib/ifdft/CMakeLists.txt",
+    "pyscf/lib/ifdft/*.c",
+    "pyscf/lib/ifdft/*.h",
+]
+exclude = [
+    ".pytest_cache",
+    ".pytest_cache/**",
+    "**/__pycache__/**",
+]
+
+[tool.cibuildwheel]
+build = "cp310-manylinux_x86_64 cp311-manylinux_x86_64 cp312-manylinux_x86_64 cp313-manylinux_x86_64 cp314-manylinux_x86_64"
+test-sources = ["tests"]
+test-requires = ["pytest"]
+test-command = "python -m pytest -q tests"
+
+[tool.cibuildwheel.linux]
+environment = { CMAKE_BUILD_PARALLEL_LEVEL = "2" }
