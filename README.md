@@ -56,6 +56,8 @@ See the [`examples`](examples) directory for density generation with
 library is licensed under MPL-2.0. See [`LICENSE`](LICENSE), [`NOTICE`](NOTICE),
 and [`LICENSES/MPL-2.0.txt`](LICENSES/MPL-2.0.txt).
 
-## Authors
+## Recommended citation
 
-Dayou Zhang; Yinan Shu; Donald G. Truhlar
+D. Zhang, Y. Shu, and D. G. Truhlar, *pyscf-ifdft*, version 0.1.0,
+University of Minnesota, Minneapolis, 2026.
+[https://github.com/Dayou-Zhang/pyscf-ifdft](https://github.com/Dayou-Zhang/pyscf-ifdft).

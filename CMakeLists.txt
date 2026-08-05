@@ -23,8 +23,7 @@ else()
     FetchContent_Declare(
       libifxc
       GIT_REPOSITORY https://github.com/Dayou-Zhang/libifxc.git
-      GIT_TAG main
-      GIT_SHALLOW TRUE
+      GIT_TAG aa9c02ac2f36a12a4ee969b5799b62bccfb86dba
       GIT_PROGRESS TRUE
     )
     FetchContent_GetProperties(libifxc)
@@ -47,7 +46,7 @@ else()
       message(FATAL_ERROR "Could not identify the fetched libifxc revision")
     endif()
     message(STATUS
-      "Fetched libifxc main at ${IFDFT_LIBIFXC_GIT_REVISION}")
+      "Fetched libifxc at ${IFDFT_LIBIFXC_GIT_REVISION}")
   endif()
 endif()
 
