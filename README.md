@@ -1,13 +1,10 @@
 # pyscf-ifdft
 
 `pyscf-ifdft` is a [PySCF](https://pyscf.org) extension for evaluating
-integral-feature density functionals on PySCF densities. It is imported as
-`pyscf.ifdft` and provides the ML25 and ML26 functionals through `IFPostRKS`
-and `IFPostUKS`.
-
-ML25 and ML26 are post-SCF methods evaluated on RKS or UKS reference densities
-with `IFPostRKS` and `IFPostUKS`. Integral-feature DFT is not a Kohn–Sham
-theory.
+integral-feature density functionals on PySCF densities. Integral-feature DFT
+is a new generalization of Kohn–Sham theory. The extension provides the ability
+to run ML25@MN15 and ML26@MN15 calculations through `IFPostRKS` and
+`IFPostUKS`.
 
 ## Installation
 
@@ -20,14 +17,16 @@ Binary wheels include the compiled backend. Source builds obtain
 
 ## Example
 
-The following evaluates ML25 on a converged MN15 unrestricted density:
+The following carries out an unrestricted ML25@MN15 density functional
+calculation on the $\ce{NH2}$ radical:
 
 ```python
 from pyscf import dft, gto, ifdft
 
 mol = gto.M(
-    atom="O 0 0 0; H 0 0 0.958; H 0 0.926 -0.239",
+    atom="N 0 0 0; H 0 -0.805 0.634; H 0 0.805 0.634",
     basis="sto-3g",
+    spin=1,
 )
 mf = dft.UKS(mol, xc="MN15").run()
 
@@ -58,6 +57,6 @@ and [`LICENSES/MPL-2.0.txt`](LICENSES/MPL-2.0.txt).
 
 ## Recommended citation
 
-D. Zhang, Y. Shu, and D. G. Truhlar, *pyscf-ifdft*, version 0.1.0,
+D. Zhang, Y. Shu, and D. G. Truhlar, *pyscf-ifdft*, version 0.1.1,
 University of Minnesota, Minneapolis, 2026.
 [https://github.com/Dayou-Zhang/pyscf-ifdft](https://github.com/Dayou-Zhang/pyscf-ifdft).
