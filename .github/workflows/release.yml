@@ -27,17 +27,23 @@ jobs:
           if-no-files-found: error
 
   wheel:
+    name: Wheel (${{ matrix.python }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: [cp310, cp311, cp312, cp313, cp314]
     steps:
       - uses: actions/checkout@v6
       - uses: pypa/cibuildwheel@v3.4.1
         env:
-          CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
+          CIBW_BUILD: ${{ matrix.python }}-manylinux_x86_64
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
         with:
           output-dir: wheelhouse
       - uses: actions/upload-artifact@v4
         with:
-          name: wheel
+          name: wheel-${{ matrix.python }}
           path: wheelhouse/*.whl
           if-no-files-found: error
 
