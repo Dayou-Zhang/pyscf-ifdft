@@ -26,4 +26,4 @@ jobs:
       - name: Check installed package
         run: |
           python -m pip check
-          python -c "from pyscf import ifdft, lib; assert ifdft.available_functionals() == ('ML25', 'ML26'); lib.load_library('libifdft_ifxc')"
+          python -c "from pyscf import ifdft, lib; assert ifdft.available_functionals() == ('ML25', 'ML26', 'MLX26'); lib.load_library('libifdft_ifxc')"
