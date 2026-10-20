@@ -23,7 +23,7 @@ PUBLIC_API = {
 
 def test_public_api_is_postscf_only():
     assert set(ifdft.__all__) == PUBLIC_API
-    assert ifdft.available_functionals() == ("ML25", "ML26")
+    assert ifdft.available_functionals() == ("ML25", "ML26", "MLX26")
     for name in (
         "RIF",
         "UIF",

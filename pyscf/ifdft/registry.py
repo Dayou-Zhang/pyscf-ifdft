@@ -3,8 +3,10 @@ from collections.abc import Iterable
 from .backends.libifxc import canonical_feature_set_key
 from .ifxc import IFXCEvaluator
 from .functionals.ml26 import ML26FeatureEvaluator
+from .functionals.mlx26 import MLX26_FEATURE_KEYS
 from .mixers.ml25 import ML25Mixer
 from .mixers.ml26 import ML26Mixer
+from .mixers.mlx26 import MLX26Mixer
 from .models import IFModel, IFModelSpec, build_feature_map
 
 _SPECS: dict[str, IFModelSpec] = {}
@@ -87,4 +89,20 @@ register_functional(
         supports_response=False,
     ),
     aliases=("MGGA_XC_ML26",),
+)
+
+_mlx26_mixer = MLX26Mixer.from_npz()
+register_functional(
+    IFModelSpec(
+        name="MLX26",
+        feature_set="ml26",
+        mixer=_mlx26_mixer,
+        feature_keys=MLX26_FEATURE_KEYS,
+        hf_coeff=_mlx26_mixer.hf_coeff,
+        xctype="MGGA",
+        supports_scf=False,
+        supports_gradients=False,
+        supports_response=False,
+    ),
+    aliases=("MGGA_XC_MLX26",),
 )
