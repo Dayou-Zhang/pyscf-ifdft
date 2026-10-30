@@ -57,6 +57,6 @@ and [`LICENSES/MPL-2.0.txt`](LICENSES/MPL-2.0.txt).
 
 ## Recommended citation
 
-D. Zhang, Y. Shu, and D. G. Truhlar, *pyscf-ifdft*, version 0.1.1,
+D. Zhang, Y. Shu, and D. G. Truhlar, *pyscf-ifdft*, version 0.2.0,
 University of Minnesota, Minneapolis, 2026.
 [https://github.com/Dayou-Zhang/pyscf-ifdft](https://github.com/Dayou-Zhang/pyscf-ifdft).
