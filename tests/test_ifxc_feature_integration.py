@@ -157,7 +157,7 @@ def test_integrate_ml25_features_rks_matches_block_backend():
     assert features.shape == (66,)
     assert np.all(np.isfinite(features))
     assert np.allclose(features, expected_features)
-    assert np.isclose(nelec, expected_nelec)
+    assert np.allclose(nelec, expected_nelec)
     assert ni.last_feature_labels == get_functional("ML25").feature_labels
 
 

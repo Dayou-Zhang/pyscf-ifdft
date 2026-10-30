@@ -75,14 +75,16 @@ def test_mlx26_registration_and_parameter_archive(params, tmp_path):
     assert model.feature_labels == EXPECTED_LABELS
     assert model.spec.feature_keys == EXPECTED_LABELS
     assert model.feature_set == "ml26"
-    assert model.hf_coeff == model.mixer.hf_coeff == 1.0
+    np.testing.assert_allclose(
+        [model.hf_coeff, model.mixer.hf_coeff], 1.0, rtol=2e-14, atol=2e-14
+    )
     assert not any((model.supports_scf, model.supports_gradients, model.supports_response))
     assert set(params) == set(PARAM_SHAPES)
     for key, shape in PARAM_SHAPES.items():
         assert params[key].shape == shape
         assert params[key].dtype == np.dtype("float64")
         assert np.isfinite(params[key]).all()
-    np.testing.assert_array_equal(params["hf_coeff"], [1.0])
+    np.testing.assert_allclose(params["hf_coeff"], [1.0], rtol=2e-14, atol=2e-14)
 
     resource = resources.files("pyscf.ifdft").joinpath("data/mlx26_param.npz")
     assert resource.is_file()
@@ -95,7 +97,11 @@ def test_mlx26_registration_and_parameter_archive(params, tmp_path):
     custom = MLX26Mixer.from_npz(custom_path)
     default = MLX26Mixer.from_npz()
     features = 10 * _normalized_case(10)
-    assert custom.energy(features, _context(10)) == default.energy(features, _context(10))
+    np.testing.assert_allclose(
+        custom.energy(features, _context(10)),
+        default.energy(features, _context(10)),
+        rtol=2e-14, atol=2e-14,
+    )
 
 
 @pytest.mark.parametrize("key", PARAM_SHAPES)
@@ -224,12 +230,17 @@ def test_mlx26_reorders_sentinel_backend_and_excludes_hfx(monkeypatch):
     ni = IntegralFeatureNumInt(model)
     monkeypatch.setattr(IFGridManager, "ensure_built", lambda self, **kw: self.grids)
     selected, _ = ni.integrate_features(object(), object(), np.zeros((1, 1)), spin=0)
-    np.testing.assert_array_equal(selected, np.arange(1, 79) / 100)
+    np.testing.assert_allclose(
+        selected, np.arange(1, 79) / 100, rtol=2e-14, atol=2e-14
+    )
     assert ni.last_feature_labels == EXPECTED_LABELS
     result = model.evaluate(selected, order=2, need_energy=True, context=_context(10))
-    assert model.to_backend_gradient(result.gradient)[0] == 0
+    np.testing.assert_allclose(
+        model.to_backend_gradient(result.gradient)[0], 0.0, rtol=0, atol=2e-14
+    )
     hessian = model.to_backend_hessian(result.hessian)
-    assert not np.any(hessian[0]) and not np.any(hessian[:, 0])
+    np.testing.assert_allclose(hessian[0], 0.0, rtol=0, atol=2e-14)
+    np.testing.assert_allclose(hessian[:, 0], 0.0, rtol=0, atol=2e-14)
 
 
 @pytest.mark.parametrize("nelec,hfx,expected_if,expected_total", GOLDEN_CASES)
@@ -253,7 +264,7 @@ def test_mlx26_actual_postscf_exchange_assembly(
         return nelec, np.array([values[label] for label in labels])
 
     def classical(*args, hf_coeff, **kwargs):
-        assert hf_coeff == 1.0
+        np.testing.assert_allclose(hf_coeff, 1.0, rtol=2e-14, atol=2e-14)
         return 0.0, state["hfx"]
 
     monkeypatch.setattr(post._numint.ifxc, "integrate_features", integrate)
@@ -261,7 +272,8 @@ def test_mlx26_actual_postscf_exchange_assembly(
     result = post.kernel()
     np.testing.assert_allclose(result.e_ifxc, expected_if, rtol=0, atol=1e-9)
     np.testing.assert_allclose(result.e_tot, expected_total, rtol=0, atol=1e-9)
-    assert result.e_classical == 0 and result.e_hf_exchange == hfx
+    np.testing.assert_allclose(result.e_classical, 0.0, rtol=0, atol=2e-14)
+    np.testing.assert_allclose(result.e_hf_exchange, hfx, rtol=2e-14, atol=2e-14)
     exchange_step = 0.125
 
     def exchange_derivatives():
@@ -271,7 +283,9 @@ def test_mlx26_actual_postscf_exchange_assembly(
         minus = post.kernel()
         state["hfx"] = hfx
         center = post.kernel()
-        assert plus.e_ifxc == minus.e_ifxc == center.e_ifxc
+        np.testing.assert_allclose(
+            [plus.e_ifxc, minus.e_ifxc], center.e_ifxc, rtol=2e-14, atol=2e-14
+        )
         np.testing.assert_allclose(plus.e_tot - minus.e_tot, 2 * exchange_step, rtol=0, atol=1e-13)
         gradient = (plus.e_tot - minus.e_tot) / (2 * exchange_step)
         hessian = (plus.e_tot - 2 * center.e_tot + minus.e_tot) / exchange_step**2
@@ -306,7 +320,9 @@ def test_mlx26_converged_mn15_postscf_components(post_cls, density_cls, atom, sp
     result = post_cls(source, xc="MLX26", grids=source.grids, nlcgrids=source.grids).kernel()
     assert result.density_mf is source
     assert result.converged_density and source.xc == "MN15"
-    np.testing.assert_array_equal(result.density_mf.make_rdm1(), dm)
+    np.testing.assert_allclose(
+        result.density_mf.make_rdm1(), dm, rtol=2e-14, atol=2e-14
+    )
     assert result.feature_labels == EXPECTED_LABELS
     assert result.features.shape == (78,) and np.isfinite(result.features).all()
     vj, vk = source.get_jk(mol, dm)

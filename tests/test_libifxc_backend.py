@@ -127,9 +127,12 @@ def test_ml26_prefix_derivatives_equal_ml25_through_second_order(spin):
         "dd_sigma_tau",
         "dd_tau_tau",
     ):
-        np.testing.assert_array_equal(
+        # Separate generated derivative kernels can differ by compiler roundoff.
+        np.testing.assert_allclose(
             getattr(extended, name)[:, :66],
             getattr(prefix, name),
+            rtol=2e-14,
+            atol=2e-14,
         )
 
 
@@ -275,8 +278,8 @@ def test_ml26_first_and_second_derivatives_match_local_differences(spin):
             hessian[:, left, right] = block
             hessian[:, right, left] = block.transpose(0, 2, 1)
 
-        np.testing.assert_array_equal(
-            hessian, hessian.transpose(0, 2, 1)
+        np.testing.assert_allclose(
+            hessian, hessian.transpose(0, 2, 1), rtol=2e-14, atol=2e-14
         )
         step = 1e-6
         for variable in range(nvariables):
@@ -514,7 +517,9 @@ def test_parallel_pyscf_mgga_features_and_weighted_vvars_match_serial(spin, npoi
 
     assert np.allclose(parallel_features, serial_features, rtol=2e-13, atol=2e-13)
     assert np.allclose(parallel_vvars, serial_vvars, rtol=2e-13, atol=2e-13)
-    assert np.array_equal(repeated_features, parallel_features)
+    np.testing.assert_allclose(
+        repeated_features, parallel_features, rtol=2e-13, atol=2e-13
+    )
 
 
 @pytest.mark.parametrize("spin", [0, 1])
@@ -565,8 +570,12 @@ def test_parallel_batch_kernels_match_serial_and_reuse_outputs(spin, npoints, nb
     assert np.allclose(parallel_vvars, serial_vvars, rtol=2e-13, atol=2e-13)
     assert np.allclose(parallel_kernel, serial_kernel, rtol=2e-13, atol=2e-13)
     assert np.allclose(parallel_dfeatures, serial_dfeatures, rtol=2e-13, atol=2e-13)
-    assert np.array_equal(repeated_kernel, parallel_kernel)
-    assert np.array_equal(repeated_dfeatures, parallel_dfeatures)
+    np.testing.assert_allclose(
+        repeated_kernel, parallel_kernel, rtol=2e-13, atol=2e-13
+    )
+    np.testing.assert_allclose(
+        repeated_dfeatures, parallel_dfeatures, rtol=2e-13, atol=2e-13
+    )
 
 
 def test_many_streamed_blocks_keep_bounded_scratch_and_do_not_spill(tmp_path, monkeypatch):

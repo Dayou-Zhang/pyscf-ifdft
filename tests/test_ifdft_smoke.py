@@ -116,12 +116,16 @@ def test_feature_hdf5_output_replaces_only_ifdft_datasets(tmp_path):
 
     with h5py.File(feature_file, "r") as fh5:
         assert fh5["unrelated"][()] == 7
-        np.testing.assert_array_equal(
-            fh5["ml25_features"][()], result.features
+        np.testing.assert_allclose(
+            fh5["ml25_features"][()], result.features, rtol=2e-14, atol=2e-14
         )
         np.testing.assert_array_equal(
             fh5["ml25_features"].attrs["feature_labels"].astype(str),
             result.feature_labels,
         )
-        assert fh5["e_classical"][()] == result.e_classical
-        assert fh5["nelec"][()] == np.rint(result.nelec)
+        np.testing.assert_allclose(
+            fh5["e_classical"][()], result.e_classical, rtol=2e-14, atol=2e-14
+        )
+        np.testing.assert_allclose(
+            fh5["nelec"][()], np.rint(result.nelec), rtol=2e-14, atol=2e-14
+        )

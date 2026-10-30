@@ -34,7 +34,7 @@ def test_ml25_archive_and_derivative():
         probe[idx] -= 2 * step
         e_minus = func.evaluate(probe, order=0, need_energy=True, context=ctx).energy
         fd = (e_plus - e_minus) / (2 * step)
-        assert np.isclose(fd, grad[idx], rtol=1e-5, atol=1e-5)
+        assert np.allclose(fd, grad[idx], rtol=1e-5, atol=1e-5)
 
     hess = result.hessian
     assert hess.shape == (66, 66)

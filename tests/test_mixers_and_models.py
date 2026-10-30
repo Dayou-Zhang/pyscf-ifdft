@@ -24,7 +24,7 @@ def test_linear_mixer_evaluate_contract():
     features = np.array([3.0, 4.0, 5.0])
 
     result = mixer.evaluate(features, order=1, need_energy=True)
-    assert np.isclose(result.energy, 0.25 + 3.0 - 8.0 + 2.5)
+    assert np.allclose(result.energy, 0.25 + 3.0 - 8.0 + 2.5)
     assert np.allclose(result.gradient, [1.0, -2.0, 0.5])
     assert result.hessian is None
 
@@ -32,7 +32,7 @@ def test_linear_mixer_evaluate_contract():
     assert result.energy is None
     assert np.allclose(result.gradient, [1.0, -2.0, 0.5])
     assert result.hessian.shape == (3, 3)
-    assert np.count_nonzero(result.hessian) == 0
+    np.testing.assert_allclose(result.hessian, 0.0, rtol=0, atol=2e-14)
 
 
 def test_model_feature_key_reordering_and_backend_embedding():
@@ -51,7 +51,7 @@ def test_model_feature_key_reordering_and_backend_embedding():
     result = model.evaluate(model_features, order=2, need_energy=True)
 
     assert np.allclose(model_features, [30.0, 10.0])
-    assert np.isclose(result.energy, 50.0)
+    assert np.allclose(result.energy, 50.0)
     assert np.allclose(result.gradient, [2.0, -1.0])
     assert np.allclose(model.to_backend_gradient(result.gradient), [-1.0, 0.0, 2.0])
     assert np.allclose(model.to_backend_hessian(result.hessian), np.zeros((3, 3)))

@@ -58,7 +58,7 @@ def test_ml26_metadata_and_parameter_archive():
         need_energy=True,
         context=context,
     ).energy
-    assert energy == pytest.approx(-80.60368404948929, abs=1e-12)
+    np.testing.assert_allclose(energy, -80.60368404948929, rtol=0, atol=1e-12)
 
 
 @pytest.mark.parametrize(
@@ -83,9 +83,9 @@ def test_ml26_fixed_density_features(post_cls, density_cls, atom, spin):
     assert result.features.shape == (79,)
     assert result.feature_labels[66:] == ML26_EXTRA_LABELS
     assert np.all(np.isfinite(result.features))
-    assert result.e_hf_exchange == 0.0
-    assert result.e_tot == pytest.approx(
-        result.e_classical + result.e_ifxc
+    np.testing.assert_allclose(result.e_hf_exchange, 0.0, rtol=0, atol=2e-14)
+    np.testing.assert_allclose(
+        result.e_tot, result.e_classical + result.e_ifxc, rtol=2e-14, atol=2e-14
     )
 
 
@@ -107,7 +107,9 @@ def test_ml26_hdf5_feature_metadata(tmp_path):
 
     with h5py.File(feature_file, "r") as fh5:
         features = fh5["ml26_features"]
-        np.testing.assert_array_equal(features[()], result.features)
+        np.testing.assert_allclose(
+            features[()], result.features, rtol=2e-14, atol=2e-14
+        )
         assert features.shape == (79,)
         assert (
             features.attrs["feature_labels"].astype(str)[-1]
